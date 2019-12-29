@@ -1,1 +1,3 @@
-# computational_geometry
+# COMPUTATIONAL GEOMETRY
+
+## Compressed Quadtree
