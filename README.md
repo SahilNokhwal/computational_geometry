@@ -1,4 +1,4 @@
-# COMPUTATIONAL GEOMETRY
+## COMPUTATIONAL GEOMETRY
 
-## Compressed Quadtree
+### Compressed Quadtree
 ![](compr_qt.png)
