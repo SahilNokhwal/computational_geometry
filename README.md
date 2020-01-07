@@ -6,3 +6,4 @@
 ### Approximate Nearest Neighbour
 
 ### Approximate Range Counting
+![](approx_range.png)
