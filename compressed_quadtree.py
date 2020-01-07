@@ -19,6 +19,11 @@ class Point():
         self.x = x
         self.y = y
         
+    def distance_from_point(self, point):
+        dx = self.x - point.x
+        dy = self.y - point.y
+        return math.sqrt(dx**2 + dy**2)
+        
 class Node():
     
     def __init__(self, low_x, high_x, low_y, high_y):
