@@ -8,6 +8,7 @@ Created on Sat Dec 28 21:53:04 2019
 
 # recursively build a compressed quadtree for a given set of points
 
+import time
 import math
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -16,6 +17,7 @@ class Point():
     
     def __init__(self, x, y):
         
+        self.id = 'point'
         self.x = x
         self.y = y
         
@@ -26,17 +28,20 @@ class Point():
         
 class Node():
     
-    def __init__(self, low_x, high_x, low_y, high_y):
+    def __init__(self, low_x, high_x, low_y, high_y, parent):
         
         self.low_x = low_x
         self.high_x = high_x
         self.low_y = low_y
         self.high_y = high_y
         self.children = []
+        self.true_child = []
+        self.parent = parent
         self.isLeaf = False
         self.cpd = 0.0
         self.fpd = 0.0
         self.key = 0.0
+        self.add_to_parent = False
         
     def __lt__(self, other):
         return self.key < other.key
@@ -103,19 +108,19 @@ class Node():
         mid_x = (self.low_x + self.high_x)/2
         mid_y = (self.low_y + self.high_y)/2
         
-        c1 = Node(self.low_x, mid_x, self.low_y, mid_y)
+        c1 = Node(self.low_x, mid_x, self.low_y, mid_y, self)
         if(len(c1.check_points(points))>0):
             self.children.append(c1)
         
-        c2 = Node(mid_x, self.high_x, self.low_y, mid_y)
+        c2 = Node(mid_x, self.high_x, self.low_y, mid_y, self)
         if(len(c2.check_points(points))>0):
             self.children.append(c2)
             
-        c3 = Node(self.low_x, mid_x, mid_y, self.high_y)
+        c3 = Node(self.low_x, mid_x, mid_y, self.high_y, self)
         if(len(c3.check_points(points))>0):
             self.children.append(c3)
             
-        c4 = Node(mid_x, self.high_x, mid_y, self.high_y)
+        c4 = Node(mid_x, self.high_x, mid_y, self.high_y, self)
         if(len(c4.check_points(points))>0):
             self.children.append(c4)
         
@@ -139,28 +144,43 @@ def compressed_quadtree(node, ax, points):
     node.make_children(points)
     nodepoints = len(node.check_points(points))
     for child in node.children:
+        
         if(nodepoints != len(child.check_points(points))):
-            child.draw(ax)
+            node.add_to_parent = True
+        
         if(child.isLeaf==False):
             compressed_quadtree(child, ax, points)
+        else:
+            leaf_point = child.check_points(points)[0]
+            leaf_node = Node(leaf_point.x-0.01, leaf_point.x+0.001, leaf_point.y-0.0001, leaf_point.y+0.001, node)
+            node.true_child.append(leaf_node)
+            leaf_node.draw(ax)
     
+    if(node.add_to_parent):
+        if(node.parent != -1): # node is not the root node itself
+            points_in_node = len(node.check_points(points))
+            par = node.parent
+            while(len(par.check_points(points)) == points_in_node):
+                par = par.parent
+            par.true_child.append(node)
+        node.draw(ax)
         
 
-#s = 1/math.sqrt(2)
-#root = Node(0,s,0,s)
-#
-#points = [(0.05,0.01), (0.3,0.3), (0.68,0.68), (0.07,0.01), (0.12,0.15), (0.63,0.68)]
-#list_of_points = []
-#
-#fig, ax = plt.subplots(1)
-#
-#for i in range(len(points)):
-#    p = Point(points[i][0], points[i][1])
-#    ax.plot(p.x, p.y,'.b')
-#    list_of_points.append(p)
-#
-#compressed_quadtree(root, ax, list_of_points)
-#
-#plt.xlim(-0.01,0.72)
-#plt.ylim(-0.01,0.72)
-#plt.show()
+s = 1/math.sqrt(2)
+root = Node(0,s,0,s,-1)
+
+points = [(0.05,0.01), (0.3,0.3), (0.68,0.68), (0.07,0.01), (0.12,0.15), (0.63,0.68)]
+list_of_points = []
+
+fig, ax = plt.subplots(1)
+
+for i in range(len(points)):
+    p = Point(points[i][0], points[i][1])
+    ax.plot(p.x, p.y,'.b')
+    list_of_points.append(p)
+
+compressed_quadtree(root, ax, list_of_points)
+
+plt.xlim(-0.01,0.72)
+plt.ylim(-0.01,0.72)
+plt.show()
