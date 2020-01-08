@@ -22,20 +22,15 @@ def approx_range(root, radius, query, e, points):
         u.cal_cpd_fpd_key(query, e)
         if (u.fpd <= (1+e)*radius):
             for p in u.check_points(points): 
-                range_points.append()
+                range_points.append(p)
         elif (u.cpd < (1+e)*radius):
-            if(u.isLeaf):
-                leaf_point = u.check_points(points)
-                if(leaf_point[0].distance_from_point(query) <= (1+e)*radius):
-                    range_points.append(leaf_point[0])
-            else:
-                for v in u.children:
-                    stack.append(v)
+            for v in u.true_child:
+                stack.append(v)
                 
     return range_points
     
 s = 1/math.sqrt(2)
-root = Node(0,s,0,s)
+root = Node(0,s,0,s,-1)
 
 # initial point list
 points = [(0.05,0.01), (0.3,0.3), (0.68,0.68), (0.07,0.01), (0.12,0.15), (0.63,0.68)]
@@ -43,8 +38,8 @@ list_of_points = []
 
 # range counting circle parameters
 q_point = Point(0.4, 0.4)
-radius = 0.2
-e = 0.05
+radius = 0.35
+e = 0.1
 
 fig, ax = plt.subplots(1)
 ax.plot(q_point.x, q_point.y, '*m')
@@ -72,6 +67,6 @@ for r_p in range_points:
     circ = plt.Circle((r_p.x, r_p.y), 0.01, color='k', fill=False)
     ax.add_artist(circ)
     
-#plt.xlim(-0.01,0.72)
-#plt.ylim(-0.01,0.72)
+plt.xlim(-0.01,0.8)
+plt.ylim(-0.01,0.8)
 plt.show()
