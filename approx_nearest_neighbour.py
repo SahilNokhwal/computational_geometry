@@ -51,7 +51,7 @@ def approx_nn(root, k, query, e):
                 heapq.heappush(priority_queue, v)
 
 s = 1/math.sqrt(2)
-root = Node(0,s,0,s)
+root = Node(0,s,0,s,-1)
 
 # initial point list
 points = [(0.05,0.01), (0.3,0.3), (0.68,0.68), (0.07,0.01), (0.12,0.15), (0.63,0.68)]
