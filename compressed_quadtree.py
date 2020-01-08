@@ -8,7 +8,6 @@ Created on Sat Dec 28 21:53:04 2019
 
 # recursively build a compressed quadtree for a given set of points
 
-import time
 import math
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
