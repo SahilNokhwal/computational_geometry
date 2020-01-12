@@ -41,6 +41,7 @@ class Node():
         self.fpd = 0.0
         self.key = 0.0
         self.add_to_parent = False
+        self.diam = math.sqrt(2)*(high_x - low_x)
         
     def __lt__(self, other):
         return self.key < other.key
@@ -80,6 +81,13 @@ class Node():
 #        else:
 #            self.cpd = min(self.dist_2_node_vert(query_point))
     
+    def dist_node(self, node):
+        
+        dx = max(self.low_x - node.high_x, 0, node.low_x - self.high_x)
+        dy = max(self.low_y - node.high_y, 0, node.low_y - self.high_y)
+        
+        return math.sqrt(dx**2 + dy**2)
+   
     def cal_cpd(self, query_point):
         
         dx = max(self.low_x - query_point.x, 0, query_point.x - self.high_x)
@@ -96,10 +104,10 @@ class Node():
     def cal_fpd(self, query_point):
         self.fpd = max(self.dist_2_node_vert(query_point))
     
-    def draw(self, ax):
-        width = self.high_x - self.low_x
-        height = self.high_y - self.low_y
-        rect = patches.Rectangle((self.low_x, self.low_y), width, height, linestyle='-.',linewidth=1, edgecolor='r', facecolor='None')
+    def draw(self, ax, color='r', ls = '-.'):
+        width = max(self.high_x - self.low_x, 0.01)
+        height = max(self.high_y - self.low_y, 0.01)
+        rect = patches.Rectangle((self.low_x, self.low_y), width, height, linestyle=ls,linewidth=1, edgecolor=color, facecolor='None')
         ax.add_patch(rect)
         
     def make_children(self, points):
@@ -151,7 +159,7 @@ def compressed_quadtree(node, ax, points):
             compressed_quadtree(child, ax, points)
         else:
             leaf_point = child.check_points(points)[0]
-            leaf_node = Node(leaf_point.x-0.01, leaf_point.x+0.001, leaf_point.y-0.0001, leaf_point.y+0.001, node)
+            leaf_node = Node(leaf_point.x, leaf_point.x, leaf_point.y-0.0001, leaf_point.y+0.001, node)
             node.true_child.append(leaf_node)
             leaf_node.draw(ax)
     
@@ -165,21 +173,21 @@ def compressed_quadtree(node, ax, points):
         node.draw(ax)
         
 
-s = 1/math.sqrt(2)
-root = Node(0,s,0,s,-1)
-
-points = [(0.05,0.01), (0.3,0.3), (0.68,0.68), (0.07,0.01), (0.12,0.15), (0.63,0.68)]
-list_of_points = []
-
-fig, ax = plt.subplots(1)
-
-for i in range(len(points)):
-    p = Point(points[i][0], points[i][1])
-    ax.plot(p.x, p.y,'.b')
-    list_of_points.append(p)
-
-compressed_quadtree(root, ax, list_of_points)
-
-plt.xlim(-0.01,0.72)
-plt.ylim(-0.01,0.72)
-plt.show()
+#s = 1/math.sqrt(2)
+#root = Node(0,s,0,s,-1)
+#
+#points = [(0.05,0.01), (0.3,0.3), (0.68,0.68), (0.07,0.01), (0.12,0.15), (0.63,0.68)]
+#list_of_points = []
+#
+#fig, ax = plt.subplots(1)
+#
+#for i in range(len(points)):
+#    p = Point(points[i][0], points[i][1])
+#    ax.plot(p.x, p.y,'.b')
+#    list_of_points.append(p)
+#
+#compressed_quadtree(root, ax, list_of_points)
+#
+#plt.xlim(-0.01,0.72)
+#plt.ylim(-0.01,0.72)
+#plt.show()
