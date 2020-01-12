@@ -1,9 +1,12 @@
-## Computational Geometry
+### Computational Geometry
 
-### Compressed Quadtree
+#### Compressed Quadtree
 ![](compr_qt.png)
 
-### Approximate Nearest Neighbour
+#### Approximate Nearest Neighbour
 
-### Approximate Range Counting
+#### Approximate Range Counting
+This is exact range counting right now.
 ![](approx_range.png)
+
+#### Well Separated Pair Decomposition (WSPD)
