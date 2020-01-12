@@ -10,3 +10,4 @@ This is exact range counting right now.
 ![](approx_range.png)
 
 #### Well Separated Pair Decomposition (WSPD)
+![](wspd.gif)
